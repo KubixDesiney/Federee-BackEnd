@@ -25,16 +25,13 @@ git clone https://github.com/KubixDesiney/Federee-BackEnd.git
 cd Federee-BackEnd
 ```
 2. Install Dependencies
-bash
-Copy
-Edit
+```bash
 npm install
+```
 3. Set Up .env
 Create a .env file at the root:
 
-env
-Copy
-Edit
+```env
 PORT=4000
 MONGO_URI=mongodb://localhost:27017/InterClubBD
 JWT_SECRET=your_jwt_secret_key
@@ -43,13 +40,13 @@ INFURA_PROJECT_ID=your_infura_id
 CONTRACT_ADDRESS=0xYourContractAddress
 CHAIN_ID_HEX=0x5
 WEB3_PROVIDER=https://goerli.infura.io/v3/your_infura_id
+```
 ✅ Rename MONGO_URI if using MONGODB_URI in your code.
 
 🧪 Running Tests
-bash
-Copy
-Edit
+```bash
 npm test
+```
 🧬 Includes Tests For:
 Auth (login)
 
@@ -66,11 +63,10 @@ Receive a JWT
 
 Use Bearer token in protected requests:
 
-makefile
-Copy
-Edit
+```makefile
 Authorization: Bearer <your_token>
 Roles: Member, Admin, Founder
+```
 
 📮 Postman Collection
 A full Postman collection is available here:
@@ -88,29 +84,28 @@ Includes:
 
 Token auto-injected after login using {{auth_token}}.
 
-📡 API Endpoints
-Method	Endpoint	Description
-POST	/api/auth/login	Web3 login via ID token
-POST	/api/club	Create a new club
-POST	/api/club/:id/join	Join a club
-POST	/api/events	Create event
-PUT	/api/events/:id	Update event
-POST	/api/polls/:id/vote	Vote on a poll
-POST	/api/tickets/:id/issue	Issue a ticket (Web3)
-GET	/api/discussion/:id	Get messages
-POST	/api/discussion/:id	Post a message
+| Method | Endpoint                 | Description             |
+| ------ | ------------------------ | ----------------------- |
+| POST   | `/api/auth/login`        | Web3 login via ID token |
+| POST   | `/api/club`              | Create a new club       |
+| POST   | `/api/club/:id/join`     | Join a club             |
+| POST   | `/api/events`            | Create event            |
+| PUT    | `/api/events/:id`        | Update event            |
+| POST   | `/api/polls/:id/vote`    | Vote on a poll          |
+| POST   | `/api/tickets/:id/issue` | Issue a ticket (Web3)   |
+| GET    | `/api/discussion/:id`    | Get messages            |
+| POST   | `/api/discussion/:id`    | Post a message          |
+
 
 🛠 Development Scripts
-bash
-Copy
-Edit
+```bash
+
 npm start        # Run server
 npm run dev      # Run with nodemon
 npm test         # Run tests
+```
 🧱 Folder Structure
-bash
-Copy
-Edit
+```bash
 /controllers      → Logic for each route
 /routes           → Route definitions
 /models           → Mongoose schemas
@@ -118,6 +113,7 @@ Edit
 /config           → DB + Web3 connection
 /tests            → Mocha/Chai test files
 /docs             → Postman + API docs
+```
 🚀 Deployment
 This project is ready for:
 
