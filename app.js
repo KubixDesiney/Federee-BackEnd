@@ -4,6 +4,12 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
+const logger = require('./services/logger');
+
+app.use((err, req, res, next) => {
+  logger.error(`${err.status || 500} - ${err.message}`);
+  next(err);
+});
 
 // Middleware
 app.use(cors());
