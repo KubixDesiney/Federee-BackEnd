@@ -1,7 +1,11 @@
+require('dotenv').config(); 
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db');
+const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const web3Service = require('./config/web3');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -22,7 +26,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-//app.use('/api/auth', require('./routes/auth'));
+console.log('authRoutes:',    require('./routes/auth'));
+console.log('clubRoutes:',    require('./routes/clubs'));
+console.log('eventRoutes:',   require('./routes/events'));
+console.log('votingRoutes:',  require('./routes/voting'));
+app.use('/api/auth',    require('./routes/auth')); 
 app.use('/api/events', require('./routes/events'));
 app.use('/api/clubs', require('./routes/clubs'));
 app.use('/api/voting', require('./routes/voting'));

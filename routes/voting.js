@@ -1,20 +1,35 @@
-const express = require('express');
+const express                   = require('express');
+const { authenticateJWT,
+        authorizeRole }         = require('../middleware/auth');
 const {
   createPoll,
-  castVote,
-  getPollResults
+  votePoll,
+  getPoll
 } = require('../controllers/votingController');
-const { protect, adminOnly } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.route('/')
-  .post(protect, adminOnly, createPoll);
+// Admins create polls on an event
+router.post(
+  '/events/:eventId/polls',
+  authenticateJWT,
+  authorizeRole('Admin'),
+  createPoll
+);
 
-router.route('/:id/vote')
-  .post(protect, castVote);
+// Members vote on a poll
+router.post(
+  '/polls/:pollId/vote',
+  authenticateJWT,
+  authorizeRole('Member'),
+  votePoll
+);
 
-router.route('/:id/results')
-  .get(protect, getPollResults);
+// Anyone authenticated can view a poll + its votes
+router.get(
+  '/polls/:pollId',
+  authenticateJWT,
+  getPoll
+);
 
 module.exports = router;

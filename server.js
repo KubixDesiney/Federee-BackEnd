@@ -1,7 +1,12 @@
+require('dotenv').config();
 const app = require('./app');
+const express = require('express');
+const cors      = require('cors');
+const bodyParser= require('body-parser');
 const connectDB = require('./config/db');
 
-const PORT = process.env.PORT || 5000;
+
+const PORT = process.env.PORT || 4000;
 
 connectDB();
 
