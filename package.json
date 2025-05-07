@@ -39,7 +39,8 @@
   },
   "scripts": {
   "test": "NODE_ENV=test mocha --timeout 10000",
-  "test:watch": "npm run test -- --watch"
+  "test:watch": "npm run test -- --watch",
+   "dev": "nodemon server.js"
 }
 
 }

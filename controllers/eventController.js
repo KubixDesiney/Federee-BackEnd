@@ -1,5 +1,33 @@
 const { createEventOnChain } = require('../services/blockchainService');
+const { get, set } = require('../services/cache');
 
+exports.getEvents = async (req, res) => {
+  try {
+    const cachedEvents = await get('allEvents');
+    
+    if (cachedEvents) {
+      return res.json({
+        success: true,
+        fromCache: true,
+        events: JSON.parse(cachedEvents)
+      });
+    }
+    
+    const events = await Event.find().populate('organizer club');
+    await set('allEvents', JSON.stringify(events), 'EX', 3600); // Cache for 1 hour
+    
+    res.json({
+      success: true,
+      fromCache: false,
+      events
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+};
 exports.createEvent = async (req, res) => {
   try {
     const { title, description, date, location, clubId } = req.body;
