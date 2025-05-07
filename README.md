@@ -23,6 +23,7 @@ This is the backend for the Federee platform — a decentralized club & event sy
 ```bash
 git clone https://github.com/KubixDesiney/Federee-BackEnd.git
 cd Federee-BackEnd
+```
 2. Install Dependencies
 bash
 Copy
