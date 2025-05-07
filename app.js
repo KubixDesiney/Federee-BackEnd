@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
+const PORT = process.env.PORT || 4000;
+connectDB();
+web3Service.init();
 const logger = require('./services/logger');
 
 app.use((err, req, res, next) => {
@@ -19,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
+//app.use('/api/auth', require('./routes/auth'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/clubs', require('./routes/clubs'));
 app.use('/api/voting', require('./routes/voting'));

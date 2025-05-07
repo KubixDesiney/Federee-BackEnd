@@ -1,33 +1,36 @@
-const { createEventOnChain } = require('../services/blockchainService');
-const { get, set } = require('../services/cache');
+const Event = require('../models/Event');
+const { contract, web3 } = require('../config/web3');
 
-exports.getEvents = async (req, res) => {
+exports.createEvent = async (req, res, next) => {
   try {
-    const cachedEvents = await get('allEvents');
-    
-    if (cachedEvents) {
-      return res.json({
-        success: true,
-        fromCache: true,
-        events: JSON.parse(cachedEvents)
-      });
-    }
-    
-    const events = await Event.find().populate('organizer club');
-    await set('allEvents', JSON.stringify(events), 'EX', 3600); // Cache for 1 hour
-    
-    res.json({
-      success: true,
-      fromCache: false,
-      events
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
+    const { title, description, date, location, attachments } = req.body;
+    // Call smart contract to log event
+    const receipt = await contract.methods.createEvent(title, date).send({ from: req.user.walletAddress });
+    const onChainId = receipt.events.EventCreated.returnValues.eventId;
+
+    const event = await Event.create({ title, description, date, location, attachments, createdBy: req.user._id, onChainId });
+    res.status(201).json(event);
+  } catch (err) { next(err); }
 };
+
+exports.updateEvent = async (req, res, next) => {
+  try {
+    const event = await Event.findById(req.params.eventId);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+    Object.assign(event, req.body);
+    await event.save();
+    // Optionally update on-chain via contract.methods.updateEvent(...)
+    res.json(event);
+  } catch (err) { next(err); }
+};
+
+exports.listEvents = async (req, res, next) => {
+  try {
+    const events = await Event.find().sort({ date: 1 });
+    res.json(events);
+  } catch (err) { next(err); }
+};
+
 exports.createEvent = async (req, res) => {
   try {
     const { title, description, date, location, clubId } = req.body;

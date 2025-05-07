@@ -1,37 +1,20 @@
+const { Web3Auth } = require('@web3auth/web3auth');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { generateToken, verifyWeb3Auth } = require('../services/authService');
+const web3auth = new Web3Auth({ clientId: process.env.WEB3AUTH_CLIENT_ID });
 
-exports.web3Login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
-    const { token } = req.body;
-    
-    
-    const web3authResponse = await verifyWeb3Auth(token);
-    const walletAddress = web3authResponse.address;
-    
-    
+    const { idToken } = req.body;
+    const userInfo = await web3auth.verifyIdToken({ idToken });
+    const walletAddress = userInfo.walletAddress;
+
     let user = await User.findOne({ walletAddress });
-    
-    if (!user) {
-      user = await User.create({ walletAddress });
-    }
-    
-    
-    const authToken = generateToken(user._id);
-    
-    res.status(200).json({
-      success: true,
-      token: authToken,
-      user: {
-        id: user._id,
-        walletAddress: user.walletAddress,
-        role: user.role
-      }
-    });
+    if (!user) user = await User.create({ walletAddress });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '12h' });
+    res.json({ token, role: user.role });
   } catch (err) {
-    res.status(400).json({
-      success: false,
-      error: err.message
-    });
+    next(err);
   }
 };

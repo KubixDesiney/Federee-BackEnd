@@ -1,22 +1,10 @@
 const express = require('express');
-const {
-  createEvent,
-  getEvents,
-  registerForEvent,
-  verifyAttendance
-} = require('../controllers/eventController');
-const { protect } = require('../middlewares/authMiddleware');
-
+const { authenticate, authorize } = require('../middleware/auth');
+const { createEvent, updateEvent, listEvents } = require('../controllers/eventController');
 const router = express.Router();
 
-router.route('/')
-  .post(protect, createEvent)
-  .get(getEvents);
-
-router.route('/:id/register')
-  .post(protect, registerForEvent);
-
-router.route('/:id/verify')
-  .post(protect, verifyAttendance);
+router.post('/', authenticate, authorize('Admin', 'Founder'), createEvent);
+router.put('/:eventId', authenticate, authorize('Admin', 'Founder'), updateEvent);
+router.get('/', authenticate, listEvents);
 
 module.exports = router;
